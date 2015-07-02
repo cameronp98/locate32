@@ -405,7 +405,6 @@ class Ui_SettingsWindow(object):
         self.cb_notification.setObjectName(_fromUtf8("cb_notification"))
         self.cb_notification.setCheckState(2)
         self.cb_notification.setEnabled(False) #disabled as not working, have to figure out setting variable across classes
-        #SettingsWindow.setCentralWidget(self.centralWidget)
         self.retranslateUi(SettingsWindow)
         QtCore.QMetaObject.connectSlotsByName(SettingsWindow)
 
@@ -780,7 +779,13 @@ if __name__ == "__main__":
 	  
 	if (sucommand == ''):
 	  exit("Please install kdesudo or gksu, is required for starting/stopping locate database update.")
-	    
+	
+	iconspath = str(os.path.realpath(__file__))
+	iconspath = os.path.dirname(iconspath)
+	iconspath = iconspath +"/icons"
+	if not (os.path.isdir(iconspath)):
+	  exit("icons folder missing, forgot to copy icons folder?")
+	  
 	global tray_icon
 	global minimize_on_exit
 	global notify_on_updatedb_complete
