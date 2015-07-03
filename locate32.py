@@ -159,7 +159,7 @@ class myQTreeView(QtGui.QTreeView):
   @pyqtSlot()
   def OpenFile(self):
     indexlist = self.selectedIndexes()
-    if len(indexlist)>1:
+    if len(indexlist)>3:
       reply = QtGui.QMessageBox.warning(self,"Open File question","Multiple items selected, open all?",QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
       if(reply == QtGui.QMessageBox.Yes):
 	for indexitem in self.selectedIndexes():
@@ -181,7 +181,7 @@ class myQTreeView(QtGui.QTreeView):
   @pyqtSlot()
   def OpenFolder(self):
     indexlist = self.selectedIndexes()
-    if len(indexlist)>1:
+    if len(indexlist)>3:
       reply = QtGui.QMessageBox.warning(self,"Open Folder question","Multiple items selected, open all folders?",QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
       if(reply == QtGui.QMessageBox.Yes):
 	for indexitem in self.selectedIndexes():
@@ -199,19 +199,19 @@ class myQTreeView(QtGui.QTreeView):
       filepath2 = str(filepath)
       filepath3 = os.path.dirname(filepath2)
       filepath4 = quote(filepath3)
-      #print "xdg-open "+ filepath3
       result =  subprocess.call(shlex.split("xdg-open "+ filepath4))
     
   @pyqtSlot()
   def OpenWith(self):
-    #print "OpenWith stub"
     indexlist = self.selectedIndexes()
-    if len(indexlist)>1:
+    filepath = ''
+    #print "len(indexlist)="+str(len(indexlist))
+    if len(indexlist)>3:
       reply = QtGui.QMessageBox.warning(self,"Open File With question","Multiple items selected, continue?",QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
       if(reply == QtGui.QMessageBox.Yes):
 	reply = QtGui.QMessageBox.warning(self,"Open File With question2","Open all items with same program?",QtGui.QMessageBox.Yes|QtGui.QMessageBox.No)
 	if(reply == QtGui.QMessageBox.Yes):
-	    print "open files with single program stub"
+	    #print "open files with single program stub"
 	    text, ok = QtGui.QInputDialog.getText(self, 'Open with...','Open selected files with:')
 	    if ok:
 	      for indexitem in self.selectedIndexes():
@@ -225,10 +225,11 @@ class myQTreeView(QtGui.QTreeView):
 		      except Exception as e: 
 			QtGui.QMessageBox.warning(main_window,"Open With error","Error when trying to open \""+str(filepath)+"\" with \""+str(text)+"\".\n\nError message: "+str(e))   
 	else:
-	    print "open files with multi programs stub"	    
+	    filepath = ''
+	    #print "open files with multi programs stub"	    
 	    for indexitem in self.selectedIndexes():
 		  if(indexitem.column()==0):
-		      text, ok = QtGui.QInputDialog.getText(self, 'Open with...','Open \"'+str(proxymodel.sibling(self.currentIndex().row(),0,self.currentIndex()).data().toString() +'\" with:'))
+		      text, ok = QtGui.QInputDialog.getText(self, 'Open with...','Open \"'+str(proxymodel.sibling(indexitem.row(),0,indexitem).data().toString() +'\" with:'))
 		      if ok:
 			filepath = proxymodel.sibling(indexitem.row(),0,indexitem).data().toString()
 			filepath2 = str(filepath)
@@ -238,6 +239,18 @@ class myQTreeView(QtGui.QTreeView):
 			  #print "result="+str(result)
 			except Exception as e: 
 			  QtGui.QMessageBox.warning(main_window,"Open With error","Error when trying to open \""+str(filepath)+"\" with \""+str(text)+"\".\n\nError message: "+str(e))
+    else: #single item selected
+         text, ok = QtGui.QInputDialog.getText(self, 'Open with...','Open \"'+str(proxymodel.sibling(self.currentIndex().row(),0,self.currentIndex()).data().toString() +'\" with:'))
+	 if ok:
+	  filepath = proxymodel.sibling(indexitem.row(),0,indexitem).data().toString()
+	  filepath2 = str(filepath)
+	  filepath3 = quote(filepath2)
+	  try:
+	    result =  subprocess.call(shlex.split(str(text) +" "+ filepath3))
+	  #print "result="+str(result)
+	  except Exception as e: 
+	    QtGui.QMessageBox.warning(main_window,"Open With error","Error when trying to open \""+str(filepath)+"\" with \""+str(text)+"\".\n\nError message: "+str(e))
+      
 	    
 	
   @pyqtSlot(QtCore.QPoint)
