@@ -242,7 +242,7 @@ class myQTreeView(QtGui.QTreeView):
     else: #single item selected
          text, ok = QtGui.QInputDialog.getText(self, 'Open with...','Open \"'+str(proxymodel.sibling(self.currentIndex().row(),0,self.currentIndex()).data().toString() +'\" with:'))
 	 if ok:
-	  filepath = proxymodel.sibling(indexitem.row(),0,indexitem).data().toString()
+	  filepath = proxymodel.sibling(self.currentIndex().row(),0,self.currentIndex()).data().toString()
 	  filepath2 = str(filepath)
 	  filepath3 = quote(filepath2)
 	  try:
